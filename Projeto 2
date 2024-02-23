@@ -1,0 +1,39 @@
+@Entity
+data class Credit(
+    @Id @GeneratedValue
+    val id: Long,
+    val creditValue: Double,
+    val dayFirstOfInstallment: LocalDate,
+    val numberOfInstallments: Int,
+    val customerId: Long,
+    val status: CreditStatus
+)
+
+enum class CreditStatus {
+    PENDING,
+    APPROVED,
+    REJECTED
+}
+
+@Service
+class CreditService {
+
+    fun createCredit(
+        creditValue: Double,
+        dayFirstOfInstallment: LocalDate,
+        numberOfInstallments: Int,
+        customerId: Long
+    ): Credit {
+        // Validar o número de parcelas
+        if (numberOfInstallments > MAX_INSTALLMENTS) {
+            throw IllegalArgumentException("Número máximo de parcelas é $MAX_INSTALLMENTS")
+        }
+
+        // Validar a data da primeira parcela
+        val maxDate = LocalDate.now().plusMonths(3)
+        if (dayFirstOfInstallment > maxDate) {
+            throw IllegalArgumentException("Data da primeira parcela não pode ser superior a $maxDate")
+        }
+
+        // ... (código para salvar o crédito no banco de dados) ...
+    }
